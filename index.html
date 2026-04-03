@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EfikCoin Eternal – Blockchain Core</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0a0f1a 0%, #03060b 100%);
+            font-family: 'Inter', sans-serif;
+            color: #e5e5e5;
+        }
+        .glass-card {
+            background: rgba(20,20,20,0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 1.5rem;
+        }
+        .btn {
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245,158,11,0.4);
+        }
+        .token-address {
+            word-break: break-all;
+            background: #1a1a1a;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-family: monospace;
+        }
+        .qr-code {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 1rem;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex items-center justify-center">
+    <div class="max-w-4xl w-full space-y-8">
+        <!-- Header -->
+        <div class="text-center">
+            <img src="https://raw.githubusercontent.com/Efikcoinofficialecosystem/efikcoin-eternal/main/1772019882787.png" alt="ECE Logo" class="w-24 h-24 mx-auto rounded-full mb-4">
+            <h1 class="text-5xl font-extrabold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+                EfikCoin Eternal
+            </h1>
+            <p class="text-gray-400 mt-2 text-lg">Blockchain Core · Decentralized Finance for Humanity</p>
+        </div>
+
+        <!-- Token Info Card -->
+        <div class="glass-card p-6">
+            <h2 class="text-2xl font-bold text-amber-400 mb-4">📜 Token Information</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-gray-400 text-sm">Name</p>
+                    <p class="text-xl font-bold">EfikCoin Eternal</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Symbol</p>
+                    <p class="text-xl font-bold">ECE</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Blockchain</p>
+                    <p class="text-xl font-bold">Binance Smart Chain (BEP‑20)</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Decimals</p>
+                    <p class="text-xl font-bold">18</p>
+                </div>
+                <div class="md:col-span-2">
+                    <p class="text-gray-400 text-sm">Contract Address</p>
+                    <div class="token-address text-sm">
+                        0x9F8C29E496ECB6C39c221458f211234DfCB233E0
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+                <a href="https://bscscan.com/address/0x9F8C29E496ECB6C39c221458f211234DfCB233E0" target="_blank" class="btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">BscScan</a>
+                <a href="https://dexscreener.com/bsc/0x9f8c29e496ecb6c39c221458f211234dfcb233e0" target="_blank" class="btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">DexScreener</a>
+                <a href="https://pancakeswap.finance/swap?outputCurrency=0x9F8C29E496ECB6C39c221458f211234DfCB233E0" target="_blank" class="btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">PancakeSwap</a>
+                <a href="https://poocoin.app/tokens/0x9f8c29e496ecb6c39c221458f211234dfcb233e0" target="_blank" class="btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">PooCoin</a>
+            </div>
+        </div>
+
+        <!-- Live Price -->
+        <div class="glass-card p-6">
+            <h2 class="text-2xl font-bold text-amber-400 mb-4">💹 Live Price</h2>
+            <div class="flex justify-between items-center flex-wrap">
+                <div>
+                    <p class="text-gray-400 text-sm">ECE Price (USD)</p>
+                    <p id="price" class="text-3xl font-bold text-amber-400">Loading...</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">24h Change</p>
+                    <p id="change" class="text-xl font-bold">--</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- The Wallet & dApp -->
+        <div class="glass-card p-6">
+            <h2 class="text-2xl font-bold text-amber-400 mb-4">📱 Use ECE Wallet</h2>
+            <p class="text-gray-300 mb-4">Experience full DeFi tools: stake, airdrop, loans, and more.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <a href="https://efikcoinofficialecosystem.github.io/Efikcoin-Eternal/" target="_blank" class="btn bg-amber-500 hover:bg-amber-600 text-black px-6 py-3 rounded-lg inline-block w-full text-center font-bold">
+                        Open dApp Dashboard
+                    </a>
+                    <p class="text-xs text-gray-500 mt-2">Full interface – stake, claim, swap</p>
+                </div>
+                <div>
+                    <button id="installBtn" class="btn bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg w-full font-bold">
+                        Install Wallet (PWA)
+                    </button>
+                    <p class="text-xs text-gray-500 mt-2">Add to home screen – works like a native app</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Links -->
+        <div class="glass-card p-6">
+            <h2 class="text-2xl font-bold text-amber-400 mb-4">🌍 Join the Ecosystem</h2>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="https://t.me/efikcoinofficialecosystem" target="_blank" class="btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">Telegram</a>
+                <a href="https://discord.gg/Ub4vvudcV" target="_blank" class="btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">Discord</a>
+                <a href="https://github.com/Efikcoinofficialecosystem" target="_blank" class="btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">GitHub</a>
+                <a href="mailto:efikcoinofficialecosystem@gmail.com" class="btn bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">Email</a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-gray-500 text-sm">
+            <p>© 2026 EfikCoin Eternal · Built for humanity · Coin is life.</p>
+        </div>
+    </div>
+
+    <script>
+        // Fetch live price from DexScreener
+        const CONTRACT = "0x9F8C29E496ECB6C39c221458f211234DfCB233E0";
+        async function fetchPrice() {
+            try {
+                const res = await fetch(`https://api.dexscreener.com/latest/dex/search?q=${CONTRACT}`);
+                const data = await res.json();
+                if (data.pairs && data.pairs.length > 0) {
+                    const pair = data.pairs[0];
+                    const priceUsd = parseFloat(pair.priceUsd);
+                    const change = pair.priceChange?.h24 ? parseFloat(pair.priceChange.h24).toFixed(2) : 0;
+                    document.getElementById('price').innerText = `$${priceUsd.toFixed(8)}`;
+                    document.getElementById('change').innerHTML = `${change > 0 ? '+' : ''}${change}%`;
+                    document.getElementById('change').style.color = change >= 0 ? '#4ade80' : '#f87171';
+                } else {
+                    document.getElementById('price').innerText = '$0.00';
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('price').innerText = 'Error';
+            }
+        }
+        fetchPrice();
+        setInterval(fetchPrice, 30000);
+
+        // Install prompt (if browser supports beforeinstallprompt)
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'block';
+        });
+        document.getElementById('installBtn').addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('Your browser does not support automatic installation. Open the dApp link and use "Add to Home Screen" from the browser menu.');
+            }
+        });
+        // Hide install button if not supported
+        if (!window.matchMedia('(display-mode: standalone)').matches && !deferredPrompt) {
+            // Keep visible but show message on click
+        }
+    </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('Service Worker registered'))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  }
+    </script>
+</body>
+</html>
