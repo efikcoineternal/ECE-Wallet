@@ -33,18 +33,25 @@
         <div id="google_translate_element" class="text-sm"></div>
     </div>
 
-    <!-- Auth Section -->
+    <!-- Auth Section (Email/Password) -->
     <div id="auth-section" class="min-h-screen flex items-center justify-center p-4 pt-20">
         <div class="glass-card max-w-md w-full p-8 text-center">
             <img src="https://raw.githubusercontent.com/Efikcoinofficialecosystem/efikcoin-eternal/main/1772019882787.png" class="w-20 h-20 mx-auto rounded-full mb-3">
             <h1 class="text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">EfikCoin Eternal</h1>
             <p class="text-gray-300 mb-2">Official Wallet · Non-custodial · Banking</p>
             <p class="text-xs text-green-400 mb-6"><i class="fas fa-check-circle"></i> Contract Verified on BscScan</p>
-            <div class="space-y-3">
-                <button id="google-login-btn" class="w-full bg-white/10 hover:bg-white/20 py-3 rounded-xl flex items-center justify-center gap-3 transition"><i class="fab fa-google text-xl"></i> Login with Google</button>
-                <button id="create-new-wallet-landing" class="w-full btn-primary py-3 rounded-xl font-semibold">✨ Create New Wallet</button>
-                <button id="import-wallet-landing" class="w-full border border-cyan-500/50 hover:bg-cyan-500/20 py-3 rounded-xl">📂 Import Existing Wallet</button>
-                <button id="login-existing-landing" class="w-full text-cyan-300 underline text-sm">🔐 Login (Existing User)</button>
+            
+            <div id="login-form" class="space-y-3">
+                <input type="email" id="login-email" placeholder="Email" class="w-full p-3 bg-black/50 rounded-xl border border-cyan-500/50 text-white">
+                <input type="password" id="login-password" placeholder="Password" class="w-full p-3 bg-black/50 rounded-xl border border-cyan-500/50 text-white">
+                <button id="signin-btn" class="w-full btn-primary py-3 rounded-xl font-semibold"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+                <p class="text-sm text-gray-400">Don't have an account? <button id="show-signup-btn" class="text-cyan-300">Create one</button></p>
+            </div>
+            <div id="signup-form" class="hidden space-y-3">
+                <input type="email" id="signup-email" placeholder="Email" class="w-full p-3 bg-black/50 rounded-xl border border-cyan-500/50 text-white">
+                <input type="password" id="signup-password" placeholder="Password (min 6)" class="w-full p-3 bg-black/50 rounded-xl border border-cyan-500/50 text-white">
+                <button id="signup-btn" class="w-full btn-primary py-3 rounded-xl font-semibold"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <p class="text-sm text-gray-400">Already have an account? <button id="show-login-btn" class="text-cyan-300">Sign In</button></p>
             </div>
             <div class="mt-6 text-xs text-gray-400">Referral bonus 10% | Powered by BSC & Supabase</div>
         </div>
@@ -80,7 +87,7 @@
         </div>
     </div>
 
-    <!-- MODALS (same structure) -->
+    <!-- MODALS -->
     <div id="storage-password-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden"><div class="glass-card w-96 p-6"><h3>🔐 Storage Password</h3><input type="password" id="storage-password-input" class="w-full mt-4 p-3 bg-black/50 rounded-xl"><p id="password-error" class="text-red-400 text-sm hidden"></p><div class="flex gap-3 mt-6"><button id="confirm-password-btn" class="btn-primary flex-1 py-2">Unlock</button><button id="cancel-password-btn" class="bg-gray-700 flex-1 py-2">Cancel</button></div></div></div>
     <div id="setup-wallet-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden"><div class="glass-card w-96 p-6 text-center"><i class="fas fa-wallet text-5xl text-cyan-400"></i><h3 class="text-2xl font-bold">Welcome</h3><p>No wallet found. Create or import.</p><div class="mt-5 space-y-3"><button id="setup-create-btn" class="w-full btn-primary py-2 rounded-xl">✨ Create New Wallet</button><button id="setup-import-btn" class="w-full border border-cyan-500 py-2 rounded-xl">📂 Import Existing Wallet</button><button id="setup-logout" class="w-full text-gray-400 text-sm mt-2">Logout</button></div></div></div>
     <div id="send-token-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden"><div class="glass-card w-96 p-6"><h3>Send EFIK</h3><input id="send-to-address" placeholder="Recipient 0x..." class="w-full mt-3 p-3 bg-black/50 rounded-xl"><input id="send-amount" placeholder="Amount" class="w-full mt-3 p-3 bg-black/50 rounded-xl"><p id="send-status" class="text-sm mt-2"></p><div class="flex gap-3 mt-5"><button id="send-token-submit" class="btn-primary flex-1 py-2">Send</button><button id="close-send-modal" class="bg-gray-700 flex-1 py-2">Cancel</button></div></div></div>
@@ -107,7 +114,6 @@
         let walletAddress = null;
         let encryptedStore = null;
         
-        // Helper UI
         const setLoading = (show, text = "Processing...") => {
             document.getElementById("loading-text").innerText = text;
             document.getElementById("loading-overlay").classList.toggle("hidden", !show);
@@ -134,7 +140,6 @@
         };
         loadTokenInfo();
         
-        // Wallet encryption / storage
         const encryptWallet = (wallet, pwd) => wallet.encrypt(pwd);
         const decryptWallet = (json, pwd) => ethers.Wallet.fromEncryptedJson(json, pwd);
         const storeWallet = async (userId, encrypted, addr) => {
@@ -156,40 +161,61 @@
             const link = `${window.location.origin}${window.location.pathname}?ref=${code}`;
             document.getElementById("referral-link-display").innerText = link;
             document.getElementById("copy-referral-link").onclick = () => { navigator.clipboard.writeText(link); alert("Referral link copied!"); };
-            // count referrals
             const { count } = await supabaseClient.from("profiles").select("id", { count: "exact", head: true }).eq("referred_by", currentUser.id);
             document.getElementById("referral-stats").innerHTML = `👥 ${count || 0} joined via you | 10% reward on their first deposit (admin distributes)`;
         };
         
-        // Handle signup referral
         const processReferral = async (newUserId, refCode) => {
             if(!refCode) return;
             const referrerId = getUserIdFromReferral(refCode);
             if(referrerId && referrerId !== newUserId) {
                 await supabaseClient.from("profiles").upsert({ id: newUserId, referred_by: referrerId });
-                // Here you can later trigger reward: e.g., mint 10% of user's first deposit to referrer
                 console.log(`Referral tracked: ${referrerId} -> ${newUserId}`);
             }
         };
         
-        // Google Sign-In
-        const googleLogin = async () => {
-            setLoading(true, "Google sign in...");
-            const { data, error } = await supabaseClient.auth.signInWithOAuth({ provider: "google" });
-            if(error) { alert(error.message); setLoading(false); }
+        // Auth UI toggles
+        const showLogin = () => {
+            document.getElementById("login-form").classList.remove("hidden");
+            document.getElementById("signup-form").classList.add("hidden");
+        };
+        const showSignup = () => {
+            document.getElementById("login-form").classList.add("hidden");
+            document.getElementById("signup-form").classList.remove("hidden");
+        };
+        document.getElementById("show-signup-btn").onclick = showSignup;
+        document.getElementById("show-login-btn").onclick = showLogin;
+        
+        document.getElementById("signin-btn").onclick = async () => {
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+            if(!email || !password) { alert("Enter email and password"); return; }
+            setLoading(true, "Signing in...");
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            setLoading(false);
+            if(error) alert(error.message);
+        };
+        
+        document.getElementById("signup-btn").onclick = async () => {
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+            if(!email || password.length < 6) { alert("Email and password (min 6 chars)"); return; }
+            setLoading(true, "Creating account...");
+            const { error } = await supabaseClient.auth.signUp({ email, password });
+            setLoading(false);
+            if(error) alert(error.message);
+            else alert("Account created! Please check your email to confirm (if email confirmation is enabled). You can now sign in.");
         };
         
         // Auth state handler
         supabaseClient.auth.onAuthStateChange(async (event, session) => {
             if(event === "SIGNED_IN" && session) {
                 currentUser = session.user;
-                // check URL for referral
                 const urlParams = new URLSearchParams(window.location.search);
                 const refCode = urlParams.get("ref");
                 if(refCode) await processReferral(currentUser.id, refCode);
                 const walletData = await fetchWallet(currentUser.id);
                 if(walletData && walletData.encrypted_wallet) {
-                    // show storage password modal
                     document.getElementById("storage-password-modal").classList.remove("hidden");
                     const confirmBtn = document.getElementById("confirm-password-btn");
                     const cancelBtn = document.getElementById("cancel-password-btn");
@@ -225,15 +251,15 @@
                     document.getElementById("setup-import-btn").onclick = () => { document.getElementById("setup-wallet-modal").classList.add("hidden"); showImportWallet(); };
                     document.getElementById("setup-logout").onclick = () => supabaseClient.auth.signOut();
                 }
-                setLoading(false);
             } else if(event === "SIGNED_OUT") {
                 currentUser = null; activeWallet = null; walletAddress = null;
                 document.getElementById("wallet-dashboard").classList.add("hidden");
                 document.getElementById("auth-section").classList.remove("hidden");
+                showLogin();
             }
         });
         
-        // Create & Import functions (simplified, same logic as before but using supabase)
+        // Create & Import functions
         let generatedMnemonic = null;
         const showCreateWallet = () => {
             const modal = document.getElementById("create-wallet-modal");
@@ -342,15 +368,10 @@
             finally { setLoading(false); }
         };
         
-        // Other UI bindings
         document.getElementById("send-token-open").onclick = () => document.getElementById("send-token-modal").classList.remove("hidden");
         document.getElementById("close-send-modal").onclick = () => document.getElementById("send-token-modal").classList.add("hidden");
         document.getElementById("refresh-balance").onclick = refreshBalances;
         document.getElementById("logout-btn").onclick = () => supabaseClient.auth.signOut();
-        document.getElementById("google-login-btn").onclick = googleLogin;
-        document.getElementById("create-new-wallet-landing").onclick = () => { if(currentUser) showCreateWallet(); else googleLogin(); };
-        document.getElementById("import-wallet-landing").onclick = () => { if(currentUser) showImportWallet(); else googleLogin(); };
-        document.getElementById("login-existing-landing").onclick = googleLogin;
         document.getElementById("copy-foundation").onclick = () => { navigator.clipboard.writeText(TOKEN_ADDRESS); alert("Contract address copied!"); };
         
         // Admin mint & burn
@@ -404,7 +425,6 @@
             finally { setLoading(false); }
         };
         
-        // Google Translate init
         window.googleTranslateElementInit = () => {
             new google.translate.TranslateElement({ pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
         };
