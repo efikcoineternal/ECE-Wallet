@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>EfikCoin Eternal – Global Banking & DeFi Hub</title>
+    <title>EfikCoin Eternal – Complete DeFi Wallet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Web3Modal + WalletConnect + Ethers -->
@@ -17,7 +17,7 @@
         body.light-theme { background: #f0f2f5; color: #1a1a2e; }
         .glass-card { background: rgba(15, 25, 45, 0.7); backdrop-filter: blur(14px); border: 1px solid rgba(0, 255, 255, 0.25); border-radius: 2rem; transition: 0.3s; }
         body.light-theme .glass-card { background: rgba(255,255,255,0.7); border-color: #00c6fb; color: #1a1a2e; }
-        .btn-primary { background: linear-gradient(135deg, #00c6fb, #005bea); transition: 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, #00c6fb, #005bea); transition: 0.2s; padding: 0.5rem 1rem; border-radius: 2rem; color: white; font-weight: bold; cursor: pointer; display: inline-block; border: none; }
         .btn-primary:hover { transform: scale(1.02); }
         .network-active { border: 2px solid #00c6fb; background: rgba(0,198,251,0.2); }
         .progress-bar { background: linear-gradient(90deg, #00c6fb, #005bea); transition: width 0.3s; }
@@ -67,11 +67,10 @@
             <button id="connect-wallet" class="bg-purple-600/50 hover:bg-purple-600 px-4 py-2 rounded-full text-sm"><i class="fas fa-plug"></i> Connect Wallet</button>
             <button id="create-wallet-btn" class="bg-cyan-600/50 px-3 py-1 rounded-full text-xs">Create</button>
             <button id="import-wallet-btn" class="bg-blue-600/50 px-3 py-1 rounded-full text-xs">Import</button>
-            <button id="download-app-btn" class="bg-green-600/50 px-3 py-1 rounded-full text-xs"><i class="fas fa-download"></i> Save as App</button>
         </div>
     </div>
 
-    <!-- Tabs for different sections -->
+    <!-- Tabs -->
     <div class="flex gap-2 mb-4 border-b border-white/20 overflow-x-auto">
         <button class="tab-btn active px-4 py-2 text-cyan-400" data-tab="dashboard">📊 Dashboard</button>
         <button class="tab-btn px-4 py-2" data-tab="staking">💰 Staking</button>
@@ -80,16 +79,16 @@
         <button class="tab-btn px-4 py-2" data-tab="swap">🔄 Swap</button>
     </div>
 
-    <!-- Tab: Dashboard (Balance & Send) -->
+    <!-- Tab: Dashboard -->
     <div id="tab-dashboard" class="tab-content">
         <div class="glass-card p-5 mb-6">
             <h3 class="text-xl font-bold"><i class="fas fa-coins text-cyan-400"></i> Your ECE Balance</h3>
             <p class="text-3xl font-bold mt-2" id="ece-balance">0.00</p>
             <p class="text-sm text-gray-400">≈ <span id="bnb-balance">0.00</span> BNB (gas)</p>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button id="send-ece-open" class="btn-primary text-sm px-4 py-2 rounded-xl"><i class="fas fa-paper-plane"></i> Send ECE</button>
-                <button id="send-any-open" class="bg-green-600/50 text-sm px-4 py-2 rounded-xl"><i class="fas fa-exchange-alt"></i> Send Any Token</button>
-                <button id="refresh-balance" class="bg-gray-700/50 text-sm px-4 py-2 rounded-xl"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <button id="send-ece-open" class="btn-primary text-sm"><i class="fas fa-paper-plane"></i> Send ECE</button>
+                <button id="send-any-open" class="bg-green-600/50 text-sm px-4 py-2 rounded-full"><i class="fas fa-exchange-alt"></i> Send Any Token</button>
+                <button id="refresh-balance" class="bg-gray-700/50 text-sm px-4 py-2 rounded-full"><i class="fas fa-sync-alt"></i> Refresh</button>
             </div>
         </div>
         <div class="glass-card p-5">
@@ -145,7 +144,7 @@
         </div>
     </div>
 
-    <!-- Hidden Admin Panel (only visible when admin connects) -->
+    <!-- Hidden Admin Panel -->
     <div id="admin-panel" class="glass-card p-5 mt-6 admin-section hidden-admin">
         <h3 class="text-xl font-bold"><i class="fas fa-user-shield"></i> Admin Core Engine</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -155,7 +154,7 @@
         <div class="mt-3"><h4 class="font-bold">System Logs</h4><div id="admin-logs" class="text-xs bg-black/30 p-2 rounded h-24 overflow-auto"></div></div>
     </div>
 
-    <!-- MODALS (Send ECE, Send Any Token, Create/Import) -->
+    <!-- MODALS -->
     <div id="send-ece-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden"><div class="glass-card w-96 p-6"><h3>Send ECE</h3><input id="send-to" placeholder="Address" class="w-full mt-3 p-3 bg-black/50 rounded"><input id="send-amount" placeholder="Amount" class="w-full mt-3 p-3 bg-black/50 rounded"><p id="send-status" class="text-sm mt-2"></p><div class="flex gap-3 mt-5"><button id="send-submit" class="btn-primary flex-1 py-2">Send</button><button id="close-send" class="bg-gray-700 flex-1 py-2">Cancel</button></div></div></div>
     <div id="send-any-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden"><div class="glass-card w-96 p-6"><h3>Send Any Token (BSC)</h3><input id="any-token-addr" placeholder="Token Address" class="w-full mt-2 p-3 bg-black/50 rounded"><input id="any-to" placeholder="Recipient" class="w-full mt-2 p-3 bg-black/50 rounded"><input id="any-amount" placeholder="Amount" class="w-full mt-2 p-3 bg-black/50 rounded"><p id="any-status" class="text-sm mt-2"></p><div class="flex gap-3 mt-5"><button id="any-send-btn" class="btn-primary flex-1 py-2">Send</button><button id="close-any" class="bg-gray-700 flex-1 py-2">Cancel</button></div></div></div>
     <div id="create-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden"><div class="glass-card w-96 p-6"><h3>Create Wallet</h3><button id="gen-mnemonic" class="bg-cyan-600 w-full py-2 rounded">Generate Seed</button><div id="mnemonic-display" class="bg-black/50 p-2 rounded mt-2 text-sm break-words"></div><input type="password" id="create-pwd" placeholder="Storage Password" class="w-full mt-3 p-3 bg-black/50 rounded"><input type="password" id="create-pwd2" placeholder="Confirm" class="w-full mt-2 p-3 bg-black/50 rounded"><p id="create-error" class="text-red-400 text-sm hidden"></p><div class="flex gap-3 mt-5"><button id="confirm-create" class="btn-primary flex-1 py-2">Create</button><button id="close-create" class="bg-gray-700 flex-1 py-2">Cancel</button></div></div></div>
@@ -164,7 +163,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
 <script>
-    // ========== CONTRACT & RPC (YOUR NODEREAL ENDPOINT) ==========
+    // ========== CONTRACT & CONFIG ==========
     const TOKEN_ADDRESS = "0x9F8C29E496ECB6C39c221458f211234DfCB233E0";
     const ADMIN_ADDRESS = "0xC5AD5cfcF81AD63a94227334b898eafCe6B27cCA".toLowerCase();
     const BSC_RPC = "https://bsc-mainnet.nodereal.io/v1/22e98151d7bd4e3a9a08f8bb033b4f2e";
@@ -195,7 +194,6 @@
         } catch(e) { console.error(e); }
     }
     
-    // Web3Modal initialization
     async function initWeb3Modal() {
         web3Modal = new Web3Modal.default({
             projectId: "b56e18d99c7dd5bcf5b87b5c7942d9d8",
@@ -461,15 +459,6 @@
     document.getElementById("copy-pool").onclick = () => { navigator.clipboard.writeText("0x7fabe1cc407f0e01c3cdf5cc05744f8d98bc70b6"); alert("Pool address copied!"); };
     document.getElementById("copy-addr-btn").onclick = () => { if(userAddress) { navigator.clipboard.writeText(userAddress); alert("Address copied!"); } };
     document.getElementById("theme-toggle").onclick = () => document.body.classList.toggle("light-theme");
-    document.getElementById("download-app-btn").onclick = () => {
-        const htmlContent = document.documentElement.outerHTML;
-        const blob = new Blob([htmlContent], { type: "text/html" });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = "EfikCoin_Eternal_Banking.html";
-        link.click();
-        URL.revokeObjectURL(link.href);
-    };
     
     // TradingView widget
     function loadTradingView() {
